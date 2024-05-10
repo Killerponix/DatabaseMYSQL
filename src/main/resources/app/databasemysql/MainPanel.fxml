@@ -12,7 +12,7 @@
 
     <BorderPane>
         <center>
-            <TableView fx:id="data">
+            <TableView fx:id="data" prefWidth="1240.0">
                 <columns>
                     <TableColumn text="A" />
                     <TableColumn text="B" />
@@ -25,7 +25,7 @@
             <HBox spacing="10">
                 <ComboBox fx:id="JCBTable" prefHeight="25.0" prefWidth="371.0" />
                 <!-- Setup-Button für 'Add' -->
-                <Button fx:id="addButton" onAction="#openDialog" text="+" />
+                <Button fx:id="addButton" onAction="#ADD" text="+" />
                 <!-- Setup-Button für 'Delete' -->
                 <Button fx:id="deleteButton" text="-" />
                 <!-- Setup-Button für 'Edit' -->

@@ -1,5 +1,6 @@
 package app.databasemysql;
 
+import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -19,7 +20,12 @@ public class loginpage {
     public void connect(ActionEvent actionEvent) {
         String s= usernameField.getText();
         System.out.println(s);
-        openDialog();
+//        openDialog();
+//        App app = new App();
+//        App app = new App();
+//        app.switchScene("MainPanel");
+
+//        app.Primestage.setScene(app.screenController.activate("MainPanel"));
     }
 
 
