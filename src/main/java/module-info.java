@@ -4,6 +4,7 @@ module app.databasemysql {
 
     requires org.controlsfx.controls;
     requires java.sql;
+    requires java.desktop;
 
     opens app.databasemysql to javafx.fxml;
     exports app.databasemysql;

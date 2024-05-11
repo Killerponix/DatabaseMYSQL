@@ -20,6 +20,21 @@ public class App extends Application {
         Primestage = stage;
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("loginpage.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
+        screenController = new ScreenController(scene);
+        screenController.addScreen("login", (Pane) fxmlLoader.getRoot());
+        screenController.addScreen("MainPanel", FXMLLoader.load(getClass().getResource("MainPanel.fxml")));
+        Primestage.setTitle("MYSQL Database Manager");
+        loginpage loginpage = fxmlLoader.getController();
+        loginpage.setScreenController(screenController);
+        Primestage.setScene(scene);
+        Primestage.show();
+
+
+
+
+       /* Primestage = stage;
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("loginpage.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
         ScreenController sc = new ScreenController(scene);
         this.screenController = sc;
 //        this.screenController = new ScreenController(scene);
@@ -28,8 +43,11 @@ public class App extends Application {
         Primestage.setTitle("MYSQL Database Manager");
         Primestage.setScene(screenController.activate("login"));
         Primestage.show();
-        switchScene("MainPanel",screenController);
-//        stage.setScene(screenController.activate("MainPanel"));
+        while (DB.isConnected()){
+
+        }
+        //        switchScene("MainPanel",screenController);
+        stage.setScene(screenController.activate("MainPanel"));*/
 //       stage.show();
 //       fxmlLoader = new FXMLLoader(App.class.getResource("MainPanel.fxml"));
 //       Scene scene1 = new Scene(fxmlLoader.load());

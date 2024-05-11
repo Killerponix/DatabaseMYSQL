@@ -4,48 +4,7 @@ import java.sql.*;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
 public class MySQL {
-    private static String host = "SimonPC";
-    private static String port = "3306";
-    private static String database = "belegschaft";
-    private static String username = "Simon";
-    private static String password = "CVH";
-    private static Connection con;
-
-    public boolean isConnected() {
-    return false;
-        //        return (con != null);
-    }
-
-    public void connect() {
-        if (!isConnected()) {
-            try {
-
-                Class.forName("com.mysql.cj.jdbc.Driver");
-
-                con = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
-                System.out.println("[MySQL] Verbunden");
-            } catch (SQLException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void disconnect() {
-        if (isConnected()) {
-            try {
-                con.close();
-                System.out.println("[MySQL] Verbindung Geschlossen");
-            } catch (SQLException e) {
-                System.out.println("rein");
-                e.printStackTrace();
-
-
-            }
-        }
-    }
-
     public void update(String qry) {
         try {
             Statement ps = con.createStatement();
@@ -115,4 +74,51 @@ public class MySQL {
     public static String getDatabase() {
         return database;
     }
+
+    private static String host = "SimonPC";
+    private static String port = "3306";
+    private static String database = "belegschaft";
+    private static String username = "Simon";
+    private static String password = "CVH";
+    private static Connection con;
+
+    public boolean isConnected() {
+        return false;
+        //        return (con != null);
+    }
+
+
+
+
+    public void connect(String username, String password, String host) {
+        if(!isConnected()){
+
+        }
+            try {
+
+                Class.forName("com.mysql.cj.jdbc.Driver");
+
+                con = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
+                System.out.println("[MySQL] Verbunden");
+            } catch (SQLException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    public void disconnect() {
+        if (isConnected()) {
+            try {
+                con.close();
+                System.out.println("[MySQL] Verbindung Geschlossen");
+            } catch (SQLException e) {
+                System.out.println("rein");
+                e.printStackTrace();
+
+
+            }
+        }
+    }
+
 }
+

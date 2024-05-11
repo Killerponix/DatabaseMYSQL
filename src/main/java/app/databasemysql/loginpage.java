@@ -3,29 +3,39 @@ package app.databasemysql;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 
+import java.net.URL;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
-public class loginpage {
+public class loginpage implements Initializable {
     @FXML
     private TextField usernameField, addressField;
     @FXML
     private PasswordField passwordField;
+    private ScreenController screenController;
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        // Hier kannst du Initialisierungen vornehmen
+    }
+    public void setScreenController(ScreenController screenController) {
+        this.screenController = screenController;
+    }
 
     public void connect(ActionEvent actionEvent) {
+        MySQL db = new MySQL();
         String s= usernameField.getText();
         System.out.println(s);
+        db.connect(usernameField.getText(),passwordField.getText(),addressField.getText());
 //        openDialog();
-//        App app = new App();
-//        App app = new App();
-//        app.switchScene("MainPanel");
 
-//        app.Primestage.setScene(app.screenController.activate("MainPanel"));
+        screenController.activate("MainPanel");
     }
 
 
