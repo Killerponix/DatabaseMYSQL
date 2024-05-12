@@ -75,7 +75,9 @@ public class MySQL {
         return database;
     }
 
-    private static String host = "SimonPC";
+//    private static String host = "SimonPC";
+    private static String host = "DESKTOP-4PGGMQ6";
+    String url = "jdbc:mysql://localhost:3306/belegschaft";
     private static String port = "3306";
     private static String database = "belegschaft";
     private static String username = "Simon";
@@ -96,11 +98,12 @@ public class MySQL {
         }
             try {
 
-                Class.forName("com.mysql.cj.jdbc.Driver");
+//                Class.forName("com.mysql.cj.jdbc.Driver");
 
-                con = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
+//                con = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database,"killerponix" , "Test#1234");
+                con = DriverManager.getConnection(url,"killerponix" , "Test#1234");
                 System.out.println("[MySQL] Verbunden");
-            } catch (SQLException | ClassNotFoundException e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }

@@ -36,6 +36,7 @@ public class loginpage implements Initializable {
 //        openDialog();
 
         screenController.activate("MainPanel");
+
     }
 
 

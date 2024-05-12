@@ -20,6 +20,9 @@ public class ScreenController {
     protected void removeScreen(String name){
         screenMap.remove(name);
     }
+    protected Pane getScene(String name){
+        return screenMap.get(name);
+    }
 
     protected Scene activate(String name){
         main.setRoot( screenMap.get(name) );
