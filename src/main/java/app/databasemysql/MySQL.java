@@ -102,6 +102,18 @@ public class MySQL {
             e.printStackTrace();
         }
     }
+    public static void test(String sql){
+        try{
+            sql = "INSERT INTO ANGESTELLTE VALUES (?,?,?,?)";
+            PreparedStatement prep = con.prepareStatement(sql);
+            prep.setString(1,"Enum");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
 }
 
 
