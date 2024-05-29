@@ -14,6 +14,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.SecureRandom;
+import java.sql.ResultSet;
 import java.util.Base64;
 import javax.swing.*;
 import java.util.Optional;
@@ -48,8 +49,11 @@ public class MainPanel {
         if (currentTable == 1){
            Object[] data;
            data=ADD_mitarbeiter();
-            System.out.println(data[2]);
-            System.out.println(data[2].toString());
+           for (int i=0;i< data.length;i++){
+               System.out.println(data[i]);
+//               System.out.println(data[i].toString());
+           }
+
 
         }
 
@@ -73,6 +77,12 @@ public class MainPanel {
         TextField textField1 = new TextField();
         TextField textField2 = new TextField();
         DatePicker dateCell = new DatePicker();
+        CheckBox checkBox1 = new CheckBox();
+        CheckBox checkBox2 = new CheckBox();
+        CheckBox checkBox3 = new CheckBox();
+        checkBox1.setText("Verschlüsseln");
+        checkBox2.setText("Verschlüsseln");
+        checkBox3.setText("Verschlüsseln");
         TextField sck = new TextField();
         Button generate = new Button();
         Label label1 = new Label("Daten 1:");
@@ -89,6 +99,9 @@ public class MainPanel {
         dialogPane.add(sck,1,3);
         dialogPane.add(label4,0,3);
         dialogPane.add(generate,2,3);
+        dialogPane.add(checkBox1,2,0);
+        dialogPane.add(checkBox2,2,1);
+        dialogPane.add(checkBox3,2,2);
         generate.setOnAction(event -> {
             try {
                 SecretKey key = generateKey();
@@ -106,7 +119,7 @@ public class MainPanel {
 
         dialog.setResultConverter(buttonType -> {
             if (buttonType == submitButtonType) {
-                return new Object[]{textField1.getText(), textField2.getText(),dateCell.getValue(),sck.getText()};
+                return new Object[]{textField1.getText(), textField2.getText(),dateCell.getValue(),getKeyFromString(sck.getText())};
             }
             return null;
         });
@@ -126,6 +139,11 @@ public class MainPanel {
     // Method to get the key as a Base64 encoded string
     public String getKeyAsString(SecretKey secretKey) {
         return Base64.getEncoder().encodeToString(secretKey.getEncoded());
+    }
+    // Method to convert a Base64 encoded key string to SecretKey
+    public SecretKey getKeyFromString(String keyStr) {
+        byte[] decodedKey = Base64.getDecoder().decode(keyStr);
+        return new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
     }
 
     // Method to encrypt a message
