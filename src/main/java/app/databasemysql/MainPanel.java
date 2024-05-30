@@ -1,5 +1,6 @@
 package app.databasemysql;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -33,14 +34,20 @@ public class MainPanel {
     TableColumn colA;
 
     @FXML
+    TableCell A1;
+
+    @FXML
     public void setJCBTable() {
-        ObservableList<String> data = FXCollections.observableArrayList(
+        ObservableList<String> datas = FXCollections.observableArrayList(
                 new String("John Doe"),
                 new String("Jane Smith")
         );
-        data.add("Test");
-        JCBTable.setItems(data);
 
+        TableColumn<String, String> column = new TableColumn<>("Name");
+        column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()));
+        data.getColumns().add(column);
+
+        JCBTable.setItems(datas);
     }
 
     public void ADD(/**/) {
@@ -56,7 +63,6 @@ public class MainPanel {
 
 
         }
-
         setJCBTable();
     }
 
@@ -77,18 +83,26 @@ public class MainPanel {
         TextField textField1 = new TextField();
         TextField textField2 = new TextField();
         DatePicker dateCell = new DatePicker();
+        TextField geschlecht = new TextField();
+        DatePicker anstelldatum = new DatePicker();
         CheckBox checkBox1 = new CheckBox();
         CheckBox checkBox2 = new CheckBox();
         CheckBox checkBox3 = new CheckBox();
+        CheckBox checkBox4 = new CheckBox();
+        CheckBox checkBox5 = new CheckBox();
         checkBox1.setText("Verschlüsseln");
         checkBox2.setText("Verschlüsseln");
         checkBox3.setText("Verschlüsseln");
+        checkBox4.setText("Verschlüsseln");
+        checkBox5.setText("Verschlüsseln");
         TextField sck = new TextField();
         Button generate = new Button();
-        Label label1 = new Label("Daten 1:");
-        Label label2 = new Label("Daten 2:");
-        Label label3 = new Label("Datum: ");
+        Label label1 = new Label("Vorname: ");
+        Label label2 = new Label("Name: ");
+        Label label3 = new Label("Geburtsdatum");
         Label label4 = new Label("Your Secret Key:");
+        Label label5 = new Label("Geschlecht M/F: ");
+        Label label6 = new Label("Anstelldatum: ");
         generate.setText("Generate");
         dialogPane.add(label1, 0, 0);
         dialogPane.add(textField1, 1, 0);
@@ -96,12 +110,19 @@ public class MainPanel {
         dialogPane.add(textField2, 1, 1);
         dialogPane.add(label3,0,2);
         dialogPane.add(dateCell,1,2);
-        dialogPane.add(sck,1,3);
-        dialogPane.add(label4,0,3);
-        dialogPane.add(generate,2,3);
+        dialogPane.add(geschlecht,1,3);
+        dialogPane.add(label5,0,3);
+        dialogPane.add(anstelldatum,1,4);
+        dialogPane.add(label6,0,4);
+
+        dialogPane.add(sck,1,5);
+        dialogPane.add(label4,0,5);
+        dialogPane.add(generate,2,5);
         dialogPane.add(checkBox1,2,0);
         dialogPane.add(checkBox2,2,1);
         dialogPane.add(checkBox3,2,2);
+        dialogPane.add(checkBox4,2,3);
+        dialogPane.add(checkBox5,2,4);
         generate.setOnAction(event -> {
             try {
                 SecretKey key = generateKey();
@@ -119,7 +140,7 @@ public class MainPanel {
 
         dialog.setResultConverter(buttonType -> {
             if (buttonType == submitButtonType) {
-                return new Object[]{textField1.getText(), textField2.getText(),dateCell.getValue(),getKeyFromString(sck.getText())};
+                return new Object[]{textField1.getText(), textField2.getText(),dateCell.getValue(),getKeyFromString(sck.getText()),checkBox1.isSelected(),checkBox2.isSelected(),checkBox3.isSelected()};
             }
             return null;
         });
@@ -129,6 +150,17 @@ public class MainPanel {
 
         return result.orElse(null);
     }
+
+    public void delete(){
+
+    }
+
+
+
+
+
+
+//    <<<<<<<<<<<<<<<<<<<---------------------------------------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
     // Method to generate a random AES-256 key
     public SecretKey generateKey() throws Exception {

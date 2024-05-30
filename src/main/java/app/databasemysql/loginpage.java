@@ -32,7 +32,7 @@ public class loginpage implements Initializable {
         MySQL db = new MySQL();
         String s= usernameField.getText();
         System.out.println(s);
-//        db.connect(usernameField.getText(),passwordField.getText(),addressField.getText());
+        db.connect(usernameField.getText(),passwordField.getText(),addressField.getText());
 //        openDialog();
 
         screenController.activate("MainPanel");

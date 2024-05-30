@@ -32,6 +32,7 @@ public class App extends Application {
 
 
 
+
        /* Primestage = stage;
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("loginpage.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
@@ -61,34 +62,6 @@ public class App extends Application {
 //        Parent root = (Parent)loader.load();
 
     }
-
-    public void switchScene2(String fxmlFile) {
-
-        FXMLLoader loader = new FXMLLoader(getClass()
-                .getResource(fxmlFile));
-        Parent root;
-        try {
-            root = (Parent) loader.load();
-            if (fxmlFile.equals("loginpage.fxml")) {
-                System.out.println("Login");
-            } else if (fxmlFile.equals("MainPanel.fxml")) {
-                System.out.println("Main");
-            }
-            this.Primestage.setScene(new Scene(root));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-        public void switchScene(String name, ScreenController sc){
-//            this.Primestage.setScene(sc.activate(name));
-            try {
-                this.Primestage.setScene( FXMLLoader.load(getClass().getResource(name)));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
 
         public static void main (String[]args){
             launch();

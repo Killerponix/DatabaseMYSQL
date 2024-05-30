@@ -5,11 +5,13 @@ import java.sql.DriverManager;
 //import java.sql.PreparedStatement;
 import java.sql.SQLException;
 public class MySQL {
-    private static final String host = "SimonPC";
+    private static final String host = "SimonPC"; //DESKTOP-4PGGMQ6
     private static final String port = "3306";
     private static final String database = "belegschaft";
-    private static final String username = "Simon";
-    private static final String password = "CVH";
+    private static final String username = "Simon"; //Killerponix
+    private static final String password = "CVH"; // DBKillerponix
+
+
 
     private static Connection con;
 
@@ -113,7 +115,21 @@ public class MySQL {
     }
 
 
+    public void connect(String text, String text1, String text2) {
+        if(!isConnected()) {
+            try {
 
+                Class.forName("com.mysql.cj.jdbc.Driver");
+
+                con = DriverManager.getConnection("jdbc:mysql://" + text2 + ":"+port+"/"+database, text, text1);
+                System.out.println("[MySQL] Verbunden");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }
 
 
