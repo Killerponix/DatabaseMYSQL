@@ -29,15 +29,15 @@
                 <!-- Setup-Button für 'Add' -->
                 <Button fx:id="addButton" onAction="#ADD" prefHeight="32.0" prefWidth="32.0" text="+" />
                 <!-- Setup-Button für 'Delete' -->
-                <Button fx:id="deleteButton" prefHeight="32.0" prefWidth="32.0" text="-" />
+                <Button fx:id="deleteButton" onAction="#delete" prefHeight="32.0" prefWidth="32.0" text="-" />
                 <!-- Setup-Button für 'Edit' -->
                 <Button fx:id="editButton" prefHeight="32.0" prefWidth="32.0" text="E" />
                 <!-- Setup-Button für 'Filter' -->
-                <Button fx:id="filterButton" prefHeight="32.0" prefWidth="32.0" text="F" />
+                <Button fx:id="filterButton" onAction="#Filter" prefHeight="32.0" prefWidth="32.0" text="F" />
                 <!-- Setup-Button für 'Join' -->
                 <Button fx:id="joinButton" prefHeight="32.0" text="Decrypt" />
                 <!-- Setup-Button für 'Execute' -->
-                <Button fx:id="executeButton" onAction="#setJCBTable" prefHeight="32.0" prefWidth="32.0" text="SQL">
+                <Button fx:id="executeButton" onAction="#initialize" prefHeight="32.0" prefWidth="32.0" text="SQL">
                <font>
                   <Font size="10.0" />
                </font></Button>
