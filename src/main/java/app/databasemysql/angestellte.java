@@ -3,17 +3,17 @@ package app.databasemysql;
 import java.sql.Date;
 
 public class angestellte {
-    private final int nummer;
+    private final int angNummer;
     private final String vorname;
-    private final String name;
+    private final String nachname;
     private final Date birth;
     private final String geschlecht;
     private final Date hiredate;
 
-    public angestellte(int nummer, String vorname,String name, Date birth, String geschlecht, Date hiredate) {
-        this.nummer = nummer;
+    public angestellte(int angNummer, String vorname,String nachname, Date birth, String geschlecht, Date hiredate) {
+        this.angNummer = angNummer;
         this.vorname = vorname;
-        this.name = name;
+        this.nachname = nachname;
         this.birth = birth;
         this.geschlecht = geschlecht;
         this.hiredate = hiredate;
@@ -27,11 +27,19 @@ public class angestellte {
         return hiredate;
     }
 
+    public String getNachname() {
+        return nachname;
+    }
+
+    public String getGeschlecht() {
+        return geschlecht;
+    }
+
     public Date getBirth() {
         return birth;
     }
 
-    public int getNummer() {
-        return nummer;
+    public int getAngNummer() {
+        return angNummer;
     }
 }

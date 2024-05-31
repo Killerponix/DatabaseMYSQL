@@ -1,15 +1,25 @@
 
 package app.databasemysql;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.sql.*;
 import java.sql.DriverManager;
 //import java.sql.PreparedStatement;
 import java.sql.SQLException;
 public class MySQL {
-    private static final String host = "SimonPC"; //DESKTOP-4PGGMQ6
+//    private static final String host = "SimonPC"; //DESKTOP-4PGGMQ6
+//    private static final String port = "3306";
+//    private static final String database = "belegschaft";
+//    private static final String username = "Simon"; //Killerponix
+//    private static final String password = "CVH"; // DBKillerponix
+
+    private static final String host = "localhost";
     private static final String port = "3306";
     private static final String database = "belegschaft";
-    private static final String username = "Simon"; //Killerponix
-    private static final String password = "CVH"; // DBKillerponix
+    private static final String username = "Killerponix";
+    private static final String password = "DBKillerponix";
+
 
 
 
@@ -18,19 +28,24 @@ public class MySQL {
     public static boolean isConnected() {
         return (con == null ? false : true);
     }
-    public static void connect() throws ClassNotFoundException {
-        if(!isConnected()) {
-            try {
 
-                Class.forName("com.mysql.cj.jdbc.Driver");
 
-                con = DriverManager.getConnection("jdbc:mysql://" + host + ":"+port+"/"+database, username, password);
-                System.out.println("[MySQL] Verbunden");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//    public static void connect() throws ClassNotFoundException {
+//        if(!isConnected()) {
+//            try {
+//
+//                Class.forName("com.mysql.cj.jdbc.Driver");
+//
+//                con = DriverManager.getConnection("jdbc:mysql://" + host + ":"+port+"/"+database, username, password);
+//                System.out.println("[MySQL] Verbunden");
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+
+
+
     public static void disconnect() {
         if(isConnected()) {
             try {
@@ -68,8 +83,8 @@ public class MySQL {
 //
 //		}
 //	}
-    public static void executeQuery(String query) {
-        try {
+    public static Object[] execute(String sql) {
+/*        try {
             Statement statement = con.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
 
@@ -92,8 +107,181 @@ public class MySQL {
             resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        }*/
+
+        try {
+            if (sql.equalsIgnoreCase("update")){
+
+            }else if (sql.equalsIgnoreCase("Insert")){
+                PreparedStatement prep = con.prepareStatement(sql);
+
+
+            }else {
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    return null;
+    }
+
+
+
+    /**
+     *
+     * @return
+     */
+
+    public ObservableList<angestellte> getAngestellte() {
+        ObservableList<angestellte> angestellteList = FXCollections.observableArrayList();
+        String query = "SELECT * FROM angestellte";
+        try (
+                Statement stmt = con.createStatement();
+                ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                int ang_nr = rs.getInt("ang_nr");
+                String vorname = rs.getString("vorname");
+                String nachname = rs.getString("nachname");
+                Date birth_date = rs.getDate("birth_date");
+                String geschlecht = rs.getString("geschlecht");
+                Date hire_date = rs.getDate("hire_date");
+                if (geschlecht==null)
+                {
+                    geschlecht="F";
+                }
+//                System.out.println(geschlecht);
+
+                angestellte ang = new angestellte(ang_nr, vorname, nachname, birth_date, geschlecht.toString(), hire_date);
+                angestellteList.add(ang);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return angestellteList;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public ObservableList<gehalt> getgeh(){
+        ObservableList<gehalt> gehlist = FXCollections.observableArrayList();
+        String query = "SELECT * FROM gehälter";
+        try (
+                Statement stmt = con.createStatement();
+                ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                int ang_nr = rs.getInt("ang_nr");
+                int gehalt = rs.getInt("gehalt");
+                Date from_date = rs.getDate("from_date");
+                Date to_date = rs.getDate("to_date");
+                gehalt geh = new gehalt(ang_nr,gehalt,from_date,to_date);
+                gehlist.add(geh);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return gehlist;}
+
+    /**
+     *
+     * @return
+     */
+    public ObservableList<titel> gettitel(){
+        ObservableList<titel> titelList = FXCollections.observableArrayList();
+        String query = "SELECT * FROM titel";
+        try (
+                Statement stmt = con.createStatement();
+                ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                int ang_nr = rs.getInt("ang_nr");
+                String titel = rs.getString("titel");
+                Date from_date = rs.getDate("from_date");
+                Date to_date = rs.getDate("to_date");
+                titel tit = new titel(ang_nr,titel,from_date,to_date);
+                titelList.add(tit);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    return titelList;}
+
+
+    public Object[] getGesamt(){
+
+    return null;}
+    public Object[] getanggeh(){
+
+    return null;}
+    public Object[] gettitgeh(){
+
+    return null;}
+
+//    <<<<<<<<<<<<<<<<<<<<<<<<<<<<---------------------------------------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+    /**Funktion die einen Angestellten der Datenbank hinzufügt
+     *
+     * @param usr Vorname
+     * @param pw  Machname
+     * @param birth Geburtsdatum
+     * @param geschlecht    Geschlecht M/F
+     * @param hire  Anstelldatum
+     */
+    public void addAngestellter(String usr, String pw, Date birth, String geschlecht, Date hire){
+        try {
+            String sql = "INSERT INTO angestellte (vorname, nachname, birth_date, geschlecht, hire_date) VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement prep = con.prepareStatement(sql);
+            prep.setString(1,usr);
+            prep.setString(2,pw);
+            prep.setDate(3,birth);
+            prep.setString(4,geschlecht);
+            prep.setDate(5,hire);
+            System.out.println(prep);
+            prep.execute();
+            prep.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
+    public void addGehalt(int nr,int gehalt, Date from, Date to){
+        try {
+            String sql = "INSERT INTO gehälter (ang_nr,gehalt,from_date,to_date) VALUES (?, ?, ?, ?)";    // DIe angestellten nummer muss noch eingetragen werden
+            PreparedStatement prep = con.prepareStatement(sql);
+            prep.setInt(1,nr);
+            prep.setInt(2,gehalt);
+            prep.setDate(3,from);
+            prep.setDate(4,to);
+
+            prep.execute();
+            prep.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void addTitel(int nr,String titel, Date from, Date to){
+        try {
+            String sql = "INSERT INTO Titel (ang_nr, titel,from_date,to_date) VALUES(?,?,?,?)";
+            PreparedStatement prep = con.prepareStatement(sql);
+            prep.setInt(1,nr);
+            prep.setString(2,titel);
+            prep.setDate(3,from);
+            prep.setDate(4,to);
+            prep.execute();
+            prep.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
     public static void executeUpdate(String query) {
         try {
             Statement statement = con.createStatement();
@@ -104,6 +292,7 @@ public class MySQL {
             e.printStackTrace();
         }
     }
+
     public static void test(String sql){
         try{
             sql = "INSERT INTO ANGESTELLTE VALUES (?,?,?,?)";
@@ -114,14 +303,19 @@ public class MySQL {
         }
     }
 
-
-    public void connect(String text, String text1, String text2) {
+    /**Verbindet sich mit der Datenbank, anhand der eigegeben Daten in der loginpage
+     *
+     * @param Username Username
+     * @param Password Password
+     * @param Adr Hostadr.
+     */
+    public void connect(String Username, String Password, String Adr) {
         if(!isConnected()) {
             try {
 
                 Class.forName("com.mysql.cj.jdbc.Driver");
 
-                con = DriverManager.getConnection("jdbc:mysql://" + text2 + ":"+port+"/"+database, text, text1);
+                con = DriverManager.getConnection("jdbc:mysql://" + Adr + ":"+port+"/"+database, Username, Password);
                 System.out.println("[MySQL] Verbunden");
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -130,11 +324,59 @@ public class MySQL {
             }
         }
     }
+
+    public void delete(Object[] o) {
+        String sql = "DELETE FROM "+o[0]+" WHERE ang_nr=?";
+//        System.out.println(o[0]+" "+ o[1]);
+        if (o[0].toString().equalsIgnoreCase("Angestellte")){
+
+            int ang_nr = (int) o[1];
+            try {
+                // Zuerst löschen Sie die entsprechenden Zeilen aus der Tabelle `gehälter`
+                String deleteGehälterSQL = "DELETE FROM gehälter WHERE ang_nr=?";
+                PreparedStatement deleteGehälterStatement = con.prepareStatement(deleteGehälterSQL);
+                deleteGehälterStatement.setInt(1, ang_nr);
+                deleteGehälterStatement.executeUpdate();
+                deleteGehälterStatement.close();
+
+                String deletetitelSQL = "DELETE FROM titel WHERE ang_nr=?";
+                PreparedStatement deletetitelStatement = con.prepareStatement(deletetitelSQL);
+                deletetitelStatement.setInt(1, ang_nr);
+                deletetitelStatement.executeUpdate();
+                deletetitelStatement.close();
+
+                // Dann löschen Sie die Zeile aus der Tabelle `Angestellte`
+                String deleteAngestellteSQL = "DELETE FROM Angestellte WHERE ang_nr=?";
+                PreparedStatement deleteAngestellteStatement = con.prepareStatement(deleteAngestellteSQL);
+                deleteAngestellteStatement.setInt(1, ang_nr);
+                deleteAngestellteStatement.executeUpdate();
+                deleteAngestellteStatement.close();
+
+
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+
+        }else {
+            try {
+                PreparedStatement prep = con.prepareStatement(sql);
+//            prep.setString(1,o[0].toString().replace("'",""));
+                prep.setInt(1,java.lang.Integer.valueOf(o[1].toString()) );
+                System.out.println(prep);
+                prep.execute();
+                prep.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+
+    }
 }
 
 
 //old Code
-
 /*
 import java.sql.*;
 import java.sql.DriverManager;
