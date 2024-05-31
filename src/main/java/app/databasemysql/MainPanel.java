@@ -1,4 +1,4 @@
-package app.databasemysql;
+package application;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -17,6 +17,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.SecureRandom;
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Base64;
 import javax.swing.*;
@@ -423,11 +424,26 @@ public class MainPanel {
 
         return result.orElse(null);
     }
-
-    public void delete(){
-        data.getColumns().clear();
+    public String getCurrentTableName() {
+        Object selectedTable = JCBTable.getSelectionModel().getSelectedItem();
+        if (selectedTable != null) {
+            return selectedTable.toString();
+        } else {
+            return null;
+        }
     }
-
+    public void delete(String name) {
+    	MySQL mysql = new MySQL();
+    	data.getColumns().clear();
+        String tableName = getCurrentTableName();
+        if (tableName != null && !name.isEmpty()) {
+            String query = "DELETE FROM " + tableName + " WHERE name = " + readtable.value;
+            PreparedStatement stmt = con.prepareStatement(query);
+        } else {
+            System.out.println("Tabelle oder Name nicht angegeben.");
+        }
+        
+    }
     public void Filter(){
         Filter_angstellte();
         System.out.println("Test");
