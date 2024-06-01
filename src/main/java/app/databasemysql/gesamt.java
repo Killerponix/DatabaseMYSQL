@@ -18,6 +18,7 @@ public class gesamt {
     private final Date gto_date;
 
 
+
     public gesamt(int angNummer, String vorname, String nachname, Date birth, String geschlecht, Date hiredate, String titel
             , Date tfrom_date, Date tto_date, int gehalt, Date gfrom_date, Date gto_date) {
         this.angNummer = angNummer;
