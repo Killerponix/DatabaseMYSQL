@@ -376,6 +376,7 @@ public class MainPanel {
     }
 
 
+
     private Object[] ADD_titel(){
         Dialog<Object[]> dialog = new Dialog<>();
         dialog.setTitle("Titel eingeben");
