@@ -33,6 +33,7 @@ public class loginpage implements Initializable {
         String s= usernameField.getText();
         System.out.println(s);
         db.connect("killerponix","DBKillerponix","localhost");
+//        db.connect("killerponix","DBKillerponix","localhost");
 //        db.connect(usernameField.getText(),passwordField.getText(),addressField.getText());
 //        openDialog();
 

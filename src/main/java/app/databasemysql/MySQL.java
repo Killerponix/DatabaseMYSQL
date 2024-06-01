@@ -7,6 +7,8 @@ import java.sql.*;
 import java.sql.DriverManager;
 //import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDate;
+
 public class MySQL {
 //    private static final String host = "SimonPC"; //DESKTOP-4PGGMQ6
 //    private static final String port = "3306";
@@ -117,6 +119,8 @@ public class MySQL {
 
 
             }else {
+                Statement stmt = con.createStatement();
+                stmt.execute(sql);
 
             }
         } catch (SQLException e) {
@@ -372,6 +376,33 @@ public class MySQL {
         }
 
 
+    }
+
+    public void updateMitarbeiter(Object[] objects, Object ID) {
+        LocalDate birth = (LocalDate) objects[2];
+        LocalDate hiredatum = (LocalDate) objects[4];
+        String sql = "UPDATE angestellte SET vorname=?, nachname=?, birth_date=?, geschlecht=?, hire_date=? WHERE ang_nr=?";
+        try {
+            PreparedStatement prep = con.prepareStatement(sql);
+            prep.setString(1,objects[0].toString());
+            prep.setString(2,objects[1].toString());
+            prep.setDate(3, Date.valueOf(birth));
+            prep.setString(4,objects[3].toString());
+            prep.setDate(5, Date.valueOf(hiredatum));
+            prep.setInt(6, (Integer) ID);
+            System.out.println(prep);
+            prep.execute();
+            prep.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public void updateGehalt(Object[] objects) {
+        LocalDate from = (LocalDate) objects[2];
+        LocalDate to = (LocalDate) objects[3];
+        String sql = "UPDATE gehalt SET ang_nr=, nachname=?, birth_date=?, geschlecht=?, hire_date=? WHERE ang_nr=?";
     }
 }
 
