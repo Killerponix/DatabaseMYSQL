@@ -43,7 +43,7 @@ public class MainPanel {
     @FXML
     private void initialize() {
         // Initialisierung des ComboBox mit Auswahloptionen
-        JCBTable.setItems(FXCollections.observableArrayList("Angestellte", "Titel","Gehalt"));
+        JCBTable.setItems(FXCollections.observableArrayList("Angestellte", "Titel","Gehalt", "Gesamt"));
         JCBTable.setOnAction(event -> {
             String selected = JCBTable.getSelectionModel().getSelectedItem();
             if ("Angestellte".equals(selected)) {
@@ -57,7 +57,7 @@ public class MainPanel {
                 setJCBTabletitgeh();
             } else if ("angestellter_gehaelter_no_titel".equals(selected)) {
                 setJCBTableangegeh();
-            } else if ("gesamt".equals(selected)) {
+            } else if ("Gesamt".equals(selected)) {
                 setJCBTableGesamt();
             }else {
                 getTable();
@@ -67,7 +67,47 @@ public class MainPanel {
     }
 
     private void setJCBTableGesamt() {
+        data.getColumns().clear();
+        // Spalten für den gesamt_information_view erstellen
+        TableColumn<Object, Integer> angestelltenIdColumn = new TableColumn<>("Angestellten ID");
+        angestelltenIdColumn.setCellValueFactory(new PropertyValueFactory<>("angNummer"));
 
+        TableColumn<Object, String> vornameColumn = new TableColumn<>("Vorname");
+        vornameColumn.setCellValueFactory(new PropertyValueFactory<>("vorname"));
+
+        TableColumn<Object, String> nachnameColumn = new TableColumn<>("Nachname");
+        nachnameColumn.setCellValueFactory(new PropertyValueFactory<>("nachname"));
+
+        TableColumn<Object, Date> geburtsdatumColumn = new TableColumn<>("Geburtsdatum");
+        geburtsdatumColumn.setCellValueFactory(new PropertyValueFactory<>("birth"));
+
+        TableColumn<Object, String> geschlechtColumn = new TableColumn<>("Geschlecht");
+        geschlechtColumn.setCellValueFactory(new PropertyValueFactory<>("geschlecht"));
+
+        TableColumn<Object, Date> einstellungsdatumColumn = new TableColumn<>("Einstellungsdatum");
+        einstellungsdatumColumn.setCellValueFactory(new PropertyValueFactory<>("hiredate"));
+
+        TableColumn<Object, String> titelColumn = new TableColumn<>("Titel");
+        titelColumn.setCellValueFactory(new PropertyValueFactory<>("titel"));
+
+        TableColumn<Object, Date> titelVonColumn = new TableColumn<>("Titel_Von");
+        titelVonColumn.setCellValueFactory(new PropertyValueFactory<>("tfrom_date"));
+
+        TableColumn<Object, Date> titelBisColumn = new TableColumn<>("Titel_Bis");
+        titelBisColumn.setCellValueFactory(new PropertyValueFactory<>("tto_date"));
+
+        TableColumn<Object, Integer> gehaltColumn = new TableColumn<>("Gehalt");
+        gehaltColumn.setCellValueFactory(new PropertyValueFactory<>("gehalt"));
+
+        TableColumn<Object, Date> gehaltVonColumn = new TableColumn<>("Gehalt_Von");
+        gehaltVonColumn.setCellValueFactory(new PropertyValueFactory<>("gfrom_date"));
+
+        TableColumn<Object, Date> gehaltBisColumn = new TableColumn<>("Gehalt_Bis");
+        gehaltBisColumn.setCellValueFactory(new PropertyValueFactory<>("gto_date"));
+        data.getColumns().addAll(angestelltenIdColumn, vornameColumn, nachnameColumn, geburtsdatumColumn, geschlechtColumn, einstellungsdatumColumn, titelColumn, titelVonColumn, titelBisColumn, gehaltColumn, gehaltVonColumn, gehaltBisColumn);
+
+        ObservableList<gesamt> andata = getgesamtData();
+        data.setItems(FXCollections.observableArrayList(andata.toArray()));
     }
 
     private void setJCBTableangegeh() {
@@ -122,26 +162,6 @@ public class MainPanel {
         data.setItems(FXCollections.observableArrayList(andata.toArray()));
     }
 
-
-
-    public Object getTable(){
-        Object Table=null;
-
-        if (JCBTable.getSelectionModel().getSelectedItem().equalsIgnoreCase("Angestellte")){
-            System.out.println("equal Angestellte Table");
-            Table ="Angestellte";
-        } else if (JCBTable.getSelectionModel().getSelectedItem().equalsIgnoreCase("gehalt")) {
-            Table="Gehalt";
-        } else if (JCBTable.getSelectionModel().getSelectedItem().equalsIgnoreCase("titel")) {
-            Table="titel";
-        }else {
-
-        }
-
-        return Table;
-    }
-
-
     public void setJCBTableAngestellte() {
         // Spalten erstellen
         TableColumn<Object, Integer> nummerColumn = new TableColumn<>("Nummer");
@@ -170,6 +190,31 @@ public class MainPanel {
 //        System.out.println(andata);
         data.setItems(FXCollections.observableArrayList(andata.toArray()));
     }
+
+    public Object getTable(){
+        Object Table=null;
+
+        if (JCBTable.getSelectionModel().getSelectedItem().equalsIgnoreCase("Angestellte")){
+            System.out.println("equal Angestellte Table");
+            Table ="Angestellte";
+        } else if (JCBTable.getSelectionModel().getSelectedItem().equalsIgnoreCase("gehalt")) {
+            Table="Gehalt";
+        } else if (JCBTable.getSelectionModel().getSelectedItem().equalsIgnoreCase("titel")) {
+            Table="titel";
+        }else if (JCBTable.getSelectionModel().getSelectedItem().equalsIgnoreCase("gesamt")) {
+            Table = "gesamt";
+        }else {
+
+        }
+
+
+
+
+        return Table;
+    }
+
+
+
 
 
     @FXML
@@ -217,6 +262,8 @@ public class MainPanel {
     private ObservableList<gehalt> getgehaltData() {
    return db.getgeh(); }
 
+    private ObservableList<gesamt> getgesamtData() {
+        return db.getGesamtInformation(); }
 
 
 
@@ -545,7 +592,19 @@ public class MainPanel {
                    index.add(i);
                }
            }
-       } else if (false) {
+       } else if (getTable().equals("gesamt")) {
+           data= Filter_gesamt();
+           setJCBTableGesamt();
+           ArrayList<Integer> index = new ArrayList<>();
+           int d=0;
+           for (int i=0;i<data.length;i++){
+               if (data[i].equals(false)){
+                   System.out.println(data[i]);
+                   this.data.getColumns().remove(i-d);
+                   d++;
+                   index.add(i);
+               }
+           }
 
        }
 
@@ -703,8 +762,78 @@ public class MainPanel {
 
         return result.orElse(null);
     }
+//getTable
+    public Object[] Filter_gesamt() {
+        Dialog<Object[]> dialogF = new Dialog<>();
+        dialogF.setTitle("Daten auswählen");
 
+        // Setze den Dialog als Modal, um die Interaktion mit der Hauptanwendung zu blockieren
+        dialogF.initOwner(null);
+        dialogF.initModality(Modality.APPLICATION_MODAL);
 
+        GridPane dialogPane = new GridPane();
+        dialogPane.setPadding(new Insets(10));
+        dialogPane.setHgap(10);
+        dialogPane.setVgap(10);
+
+        CheckBox angestelltenId = new CheckBox("AngestelltenID");
+        CheckBox vorname = new CheckBox("Vorname");
+        CheckBox nachname = new CheckBox("Nachname");
+        CheckBox geburtsdatum = new CheckBox("Geburtsdatum");
+        CheckBox geschlecht = new CheckBox("Geschlecht");
+        CheckBox einstellungsdatum = new CheckBox("Einstellungsdatum");
+        CheckBox titel = new CheckBox("Titel");
+        CheckBox titelVon = new CheckBox("Titel_Von");
+        CheckBox titelBis = new CheckBox("Titel_Bis");
+        CheckBox gehalt = new CheckBox("Gehalt");
+        CheckBox gehaltVon = new CheckBox("Gehalt_Von");
+        CheckBox gehaltBis = new CheckBox("Gehalt_Bis");
+
+        angestelltenId.setSelected(true);
+        vorname.setSelected(true);
+        nachname.setSelected(true);
+        geburtsdatum.setSelected(true);
+        geschlecht.setSelected(true);
+        einstellungsdatum.setSelected(true);
+        titel.setSelected(true);
+        titelVon.setSelected(true);
+        titelBis.setSelected(true);
+        gehalt.setSelected(true);
+        gehaltVon.setSelected(true);
+        gehaltBis.setSelected(true);
+
+        dialogPane.add(angestelltenId, 0, 0);
+        dialogPane.add(vorname, 0, 1);
+        dialogPane.add(nachname, 0, 2);
+        dialogPane.add(geburtsdatum, 0, 3);
+        dialogPane.add(geschlecht, 0, 4);
+        dialogPane.add(einstellungsdatum, 0, 5);
+        dialogPane.add(titel, 0, 6);
+        dialogPane.add(titelVon, 0, 7);
+        dialogPane.add(titelBis, 0, 8);
+        dialogPane.add(gehalt, 0, 9);
+        dialogPane.add(gehaltVon, 0, 10);
+        dialogPane.add(gehaltBis, 0, 11);
+
+        ButtonType submitButtonType = new ButtonType("Bestätigen", ButtonBar.ButtonData.OK_DONE);
+
+        dialogF.getDialogPane().getButtonTypes().addAll(submitButtonType, ButtonType.CANCEL);
+
+        dialogF.setResultConverter(buttonType -> {
+            if (buttonType == submitButtonType) {
+                return new Object[]{angestelltenId.isSelected(), vorname.isSelected(), nachname.isSelected(),
+                        geburtsdatum.isSelected(), geschlecht.isSelected(), einstellungsdatum.isSelected(),
+                        titel.isSelected(), titelVon.isSelected(), titelBis.isSelected(),
+                        gehalt.isSelected(), gehaltVon.isSelected(), gehaltBis.isSelected()};
+            }
+            return null;
+        });
+
+        dialogF.getDialogPane().setContent(dialogPane);
+        Optional<Object[]> result = dialogF.showAndWait();
+
+        return result.orElse(null);
+    }
 
 
 

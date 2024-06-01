@@ -17,8 +17,8 @@ public class MySQL {
     private static final String host = "localhost";
     private static final String port = "3306";
     private static final String database = "belegschaft";
-    private static final String username = "Killerponix";
-    private static final String password = "DBKillerponix";
+    private static final String username = "Simon";
+    private static final String password = "CVH";
 
 
 
@@ -210,6 +210,37 @@ public class MySQL {
             System.out.println(e.getMessage());
         }
     return titelList;}
+
+    public ObservableList<gesamt> getGesamtInformation() {
+        ObservableList<gesamt> gesamtList = FXCollections.observableArrayList();
+        String query = "SELECT * FROM gesamt_information_view";
+        try (
+                Statement stmt = con.createStatement();
+                ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                int ang_nr = rs.getInt("AngestelltenID");
+                String vorname = rs.getString("Vorname");
+                String nachname = rs.getString("Nachname");
+                Date birth_date = rs.getDate("Geburtsdatum");
+                String geschlecht = rs.getString("Geschlecht");
+                Date hire_date = rs.getDate("Einstellungsdatum");
+                String titel = rs.getString("Titel");
+                Date titel_from = rs.getDate("Titel_Von");
+                Date titel_to = rs.getDate("Titel_Bis");
+                int gehalt = rs.getInt("Gehalt");
+                Date gehalt_from = rs.getDate("Gehalt_Von");
+                Date gehalt_to = rs.getDate("Gehalt_Bis");
+
+                gesamt gesamtInfo = new gesamt(ang_nr, vorname, nachname, birth_date, geschlecht, hire_date, titel
+                        , titel_from, titel_to, gehalt, gehalt_from, gehalt_to);
+                gesamtList.add(gesamtInfo);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return gesamtList;
+    }
 
 
     public Object[] getGesamt(){
