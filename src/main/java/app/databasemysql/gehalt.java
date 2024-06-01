@@ -23,8 +23,7 @@ public class gehalt {
         return gehalt;
     }
 
-    public Date getFrom_date() {
-        return from_date;
+    public Date getFrom_date() { return from_date;
     }
 
     public Date getTo_date() {
