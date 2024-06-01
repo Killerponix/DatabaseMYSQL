@@ -69,6 +69,7 @@ public class MainPanel {
             }
 
         });
+
     }
     //Die VIews müssen noch aufgenommen werden, ebenfalls muss nooch ein showTable ausgeführt werden, damit neue Tables erkannt werden und im zweifel erkannt werden
     //SQL, Decrypt,Encrypt, CT und DT müssen noch funktionsfähig gemacht werden
