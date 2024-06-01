@@ -358,7 +358,6 @@ public class MainPanel {
         });
 
 
-
         ButtonType submitButtonType = new ButtonType("Bestätigen", ButtonBar.ButtonData.OK_DONE);
 
         dialog.getDialogPane().getButtonTypes().addAll(submitButtonType, ButtonType.CANCEL);
