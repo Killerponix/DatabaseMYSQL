@@ -143,7 +143,7 @@ SELECT * FROM angestellter_gehaelter_no_titel;
 
 CREATE OR REPLACE VIEW gesamt_information_view AS
   SELECT
-    a.ang_nr AS 'Angestellten ID',
+    a.ang_nr AS 'AngestelltenID',
     a.vorname AS 'Vorname',
     a.nachname AS 'Nachname',
     a.birth_date AS 'Geburtsdatum',
