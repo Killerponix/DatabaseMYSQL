@@ -13,7 +13,7 @@
 
     <BorderPane>
         <center>
-            <TableView fx:id="data" prefWidth="1240.0">
+            <TableView fx:id="data" prefWidth="1240.0" prefHeight="680">
                 <columns>
                     <TableColumn fx:id="colA" text="A" />
                     <TableColumn text="B" />

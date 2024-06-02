@@ -13,6 +13,7 @@ import javafx.scene.layout.Border;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Shape;
 import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.controlsfx.control.spreadsheet.SpreadsheetCellEditor;
 
 import javax.crypto.*;
@@ -44,6 +45,8 @@ public class MainPanel {
     @FXML
     ComboBox <String> JCBTable;
 
+   static Stage Primestage;
+
 
     @FXML
     private void initialize() {
@@ -71,8 +74,15 @@ public class MainPanel {
         });
 
     }
-    //Die VIews müssen noch aufgenommen werden, ebenfalls muss nooch ein showTable ausgeführt werden, damit neue Tables erkannt werden und im zweifel erkannt werden
-    //SQL, Decrypt,Encrypt, CT und DT müssen noch funktionsfähig gemacht werden
+
+    public void setStage(Stage stage){
+        Primestage =stage;
+    }
+
+    public void changeStageSize(){
+        this.Primestage.setMinWidth(1280);
+        this.Primestage.setMinHeight(720);
+    }
 
     private void setJCBTableGesamt() {
         data.getColumns().clear();
@@ -326,26 +336,26 @@ public class MainPanel {
             Date birthDate = Date.valueOf((LocalDate) data[2]);
             Date hireDate = Date.valueOf((LocalDate) data[4]);
             //Enrcypt
-
+//
 //            String encrypt ="";
 //            try {
 //                if (data[6].equals(true)){
 //                    System.out.println(encrypt(data[0].toString(),getKeyFromString(data[5].toString())));
-//                    System.out.println(encrypt("Test",data[5].toString()));
+//                    System.out.println(encrypt("Test",getKeyFromString(data[5].toString()))) ;
 //                    encrypt= encrypt(data[0].toString(),getKeyFromObject(data[5]) );
 //                }
-//                if (data[7].equals(true)){
-//                    data[1]= encrypt(data[1].toString(),data[5].toString());
-//                }
-//                if (data[8].equals(true)){
-//                    data[2]= encrypt(data[2].toString(),data[5].toString());
-//                }
-//                if (data[9].equals(true)){
-//                    data[3]= encrypt(data[3].toString(),(data[5].toString()));
-//                }
-//                if (data[10].equals(true)){
-//                    data[4]= encrypt(data[4].toString(),data[5].toString());
-//                }
+////                if (data[7].equals(true)){
+////                    data[1]= encrypt(data[1].toString(),data[5].toString());
+////                }
+////                if (data[8].equals(true)){
+////                    data[2]= encrypt(data[2].toString(),data[5].toString());
+////                }
+////                if (data[9].equals(true)){
+////                    data[3]= encrypt(data[3].toString(),(data[5].toString()));
+////                }
+////                if (data[10].equals(true)){
+////                    data[4]= encrypt(data[4].toString(),data[5].toString());
+////                }
 //            } catch (Exception e) {
 //                throw new RuntimeException(e);
 //            }
@@ -549,7 +559,7 @@ public class MainPanel {
 
     private Object[] ADD_mitarbeiter() {
         Dialog<Object[]> dialog = new Dialog<>();
-        dialog.setTitle("Daten eingeben");
+        dialog.setTitle("Angestellten hinzufügen");
 
         // Setze den Dialog als Modal, um die Interaktion mit der Hauptanwendung zu blockieren
         dialog.initOwner(null);
@@ -938,11 +948,11 @@ public class MainPanel {
     public void edit(){
         String table = getTable().toString();
         if (table.equalsIgnoreCase("angestellte")){
-            System.out.println("ahba");
             Object [] data = EditCell();
             String birthDate = String.valueOf(Date.valueOf(data[2].toString()));
             String hireDate = String.valueOf(Date.valueOf(data[4].toString()));
             db.updateMitarbeiter(editMitarbeiter(data[0].toString(),data[1].toString(),birthDate,data[3].toString(),hireDate),data[5]);
+            setJCBTableAngestellte();
 
         } else if (table.equalsIgnoreCase("gehalt")) {
 //            db.updateGehalt(editgehalt());
@@ -1162,11 +1172,9 @@ public class MainPanel {
     private Object[] sql(){
         Dialog<Object[]> dialog = new Dialog<>();
         dialog.setTitle("sql Befehl eingeben");
-
         // Setze den Dialog als Modal, um die Interaktion mit der Hauptanwendung zu blockieren
         dialog.initOwner(null);
         dialog.initModality(Modality.APPLICATION_MODAL);
-
         GridPane dialogPane = new GridPane();
         dialogPane.setPadding(new Insets(10));
         dialogPane.setHgap(10);
@@ -1179,10 +1187,6 @@ public class MainPanel {
 
         dialogPane.add(tfsql,1,0);
         dialogPane.add(label1, 0, 0);
-
-
-
-
         ButtonType submitButtonType = new ButtonType("Bestätigen", ButtonBar.ButtonData.OK_DONE);
 
         dialog.getDialogPane().getButtonTypes().addAll(submitButtonType, ButtonType.CANCEL);

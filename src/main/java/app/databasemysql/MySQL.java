@@ -116,12 +116,10 @@ public class MySQL {
 
             }else if (sql.equalsIgnoreCase("Insert")){
                 PreparedStatement prep = con.prepareStatement(sql);
-
-
             }else {
                 Statement stmt = con.createStatement();
                 stmt.execute(sql);
-
+                stmt.close();
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -154,7 +152,7 @@ public class MySQL {
                 Date hire_date = rs.getDate("hire_date");
                 if (geschlecht==null)
                 {
-                    geschlecht="F";
+                    geschlecht="";
                 }
 //                System.out.println(geschlecht);
 
@@ -285,6 +283,7 @@ public class MySQL {
             throw new RuntimeException(e);
         }
     }
+
     public void addGehalt(int nr,int gehalt, Date from, Date to){
         try {
             String sql = "INSERT INTO gehälter (ang_nr,gehalt,from_date,to_date) VALUES (?, ?, ?, ?)";    // DIe angestellten nummer muss noch eingetragen werden

@@ -25,9 +25,12 @@ public class App extends Application {
         screenController.addScreen("MainPanel", FXMLLoader.load(getClass().getResource("MainPanel.fxml")));
         Primestage.setTitle("MYSQL Database Manager");
         loginpage loginpage = fxmlLoader.getController();
+        MainPanel mainPanel = new MainPanel();
+        mainPanel.setStage(Primestage);
         loginpage.setScreenController(screenController);
         Primestage.setScene(scene);
         Primestage.show();
+
 
 
 
