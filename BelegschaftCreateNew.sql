@@ -12,7 +12,7 @@ CREATE TABLE angestellte (
     vorname VARCHAR(16) NOT NULL,
     nachname VARCHAR(16),
     birth_date DATE,
-    geschlecht ENUM ('M','F'),    
+    geschlecht ENUM ('M','F', 'D'),    
     hire_date DATE,
     PRIMARY KEY (ang_nr)
 );
