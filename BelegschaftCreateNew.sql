@@ -17,14 +17,35 @@ CREATE TABLE angestellte (
     PRIMARY KEY (ang_nr)
 );
 
+
 CREATE TABLE titel (
     ang_nr INT NOT NULL,
     titel VARCHAR(50) NOT NULL,
     from_date DATE NOT NULL,
     to_date DATE NOT NULL,
     FOREIGN KEY (ang_nr) REFERENCES angestellte (ang_nr) ,
-    PRIMARY KEY (ang_nr, from_date, titel)
+    PRIMARY KEY (ang_nr, from_date, to_date)
 ); 
+
+DELIMITER //
+CREATE TRIGGER check_overlap_before_insert_titel BEFORE INSERT ON titel
+FOR EACH ROW
+BEGIN
+    DECLARE overlap_found INT;
+
+    SELECT COUNT(*) INTO overlap_found
+    FROM titel
+    WHERE (from_date < NEW.to_date)
+    AND (to_date > NEW.from_date)
+    AND ang_nr = NEW.ang_nr;
+
+    IF overlap_found > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Überlappender Zeitraum gefunden, Einfügung abgelehnt.';
+    END IF;
+END;
+//
+DELIMITER ;
 
 CREATE TABLE gehälter (
     ang_nr INT NOT NULL,
@@ -32,10 +53,32 @@ CREATE TABLE gehälter (
     from_date DATE NOT NULL,
     to_date DATE NOT NULL,
     FOREIGN KEY (ang_nr) REFERENCES angestellte (ang_nr) ,
-    PRIMARY KEY (ang_nr, from_date, gehalt)
+    PRIMARY KEY (ang_nr, from_date, to_date)
 ); 
-insert into angestellte (vorname, nachname,birth_date, geschlecht, hire_date)
-value 
+
+DELIMITER //
+CREATE TRIGGER check_overlap_before_insert_gehälter BEFORE INSERT ON gehälter
+FOR EACH ROW
+BEGIN
+    DECLARE overlap_found INT;
+
+    SELECT COUNT(*) INTO overlap_found
+    FROM gehälter
+    WHERE (from_date < NEW.to_date)
+    AND (to_date > NEW.from_date)
+    AND ang_nr = NEW.ang_nr;
+
+    IF overlap_found > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Überlappender Zeitraum gefunden, Einfügung abgelehnt.';
+    END IF;
+END;
+//
+DELIMITER ;
+
+
+INSERT INTO angestellte (vorname, nachname,birth_date, geschlecht, hire_date)
+VALUE 
 ('John', 'Smith', '1990-03-15', 'M', '2021-01-05'),
 ('Jane', 'Smith', '1990-03-15', 'F', '2021-01-05'),
 ('Robert', 'Johnson', '1992-11-08', 'M', '2019-05-20'),
@@ -158,3 +201,11 @@ LEFT JOIN angestellte a ON g.ang_nr = a.ang_nr
 LEFT JOIN titel t ON t.ang_nr = g.ang_nr;
 
 SELECT * FROM gesamt_information_view;
+
+INSERT INTO gehälter (ang_nr, gehalt, from_date, to_date) VALUES
+(1, 70000, '2019-01-01', '2020-12-31');
+
+
+
+    
+
