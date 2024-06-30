@@ -12,10 +12,11 @@ CREATE TABLE angestellte (
     vorname VARCHAR(16) NOT NULL,
     nachname VARCHAR(16),
     birth_date DATE,
-    geschlecht ENUM ('M','F'),    
+    geschlecht ENUM ('M','F', 'D'),    
     hire_date DATE,
     PRIMARY KEY (ang_nr)
 );
+
 
 CREATE TABLE titel (
     ang_nr INT NOT NULL,
@@ -23,8 +24,28 @@ CREATE TABLE titel (
     from_date DATE NOT NULL,
     to_date DATE NOT NULL,
     FOREIGN KEY (ang_nr) REFERENCES angestellte (ang_nr) ,
-    PRIMARY KEY (ang_nr, from_date, titel)
+    PRIMARY KEY (ang_nr, from_date, to_date)
 ); 
+
+DELIMITER //
+CREATE TRIGGER check_overlap_before_insert_titel BEFORE INSERT ON titel
+FOR EACH ROW
+BEGIN
+    DECLARE overlap_found INT;
+
+    SELECT COUNT(*) INTO overlap_found
+    FROM titel
+    WHERE (from_date < NEW.to_date)
+    AND (to_date > NEW.from_date)
+    AND ang_nr = NEW.ang_nr;
+
+    IF overlap_found > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Überlappender Zeitraum gefunden, Einfügung abgelehnt.';
+    END IF;
+END;
+//
+DELIMITER ;
 
 CREATE TABLE gehälter (
     ang_nr INT NOT NULL,
@@ -32,10 +53,32 @@ CREATE TABLE gehälter (
     from_date DATE NOT NULL,
     to_date DATE NOT NULL,
     FOREIGN KEY (ang_nr) REFERENCES angestellte (ang_nr) ,
-    PRIMARY KEY (ang_nr, from_date)
+    PRIMARY KEY (ang_nr, from_date, to_date)
 ); 
-insert into angestellte (vorname, nachname,birth_date, geschlecht, hire_date)
-value 
+
+DELIMITER //
+CREATE TRIGGER check_overlap_before_insert_gehälter BEFORE INSERT ON gehälter
+FOR EACH ROW
+BEGIN
+    DECLARE overlap_found INT;
+
+    SELECT COUNT(*) INTO overlap_found
+    FROM gehälter
+    WHERE (from_date < NEW.to_date)
+    AND (to_date > NEW.from_date)
+    AND ang_nr = NEW.ang_nr;
+
+    IF overlap_found > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Überlappender Zeitraum gefunden, Einfügung abgelehnt.';
+    END IF;
+END;
+//
+DELIMITER ;
+
+
+INSERT INTO angestellte (vorname, nachname,birth_date, geschlecht, hire_date)
+VALUE 
 ('John', 'Smith', '1990-03-15', 'M', '2021-01-05'),
 ('Jane', 'Smith', '1990-03-15', 'F', '2021-01-05'),
 ('Robert', 'Johnson', '1992-11-08', 'M', '2019-05-20'),
@@ -100,50 +143,10 @@ INSERT INTO titel (ang_nr, titel, from_date, to_date) VALUES
   
   SELECT * FROM gehälter;
   
-CREATE OR REPLACE VIEW titel_gehaelter AS
-  SELECT
-	t.ang_nr AS 'Angestellter ID',
-    titel AS 'Titel',
-    t.from_date AS 'Titel_Von',
-    t.to_date AS 'Titel_Bis',
-    gehalt AS 'Gehalt',
-    g.from_date AS 'Gehalt_Von',
-    g.to_date AS 'Gehalt_Bis'
-FROM titel t
-LEFT JOIN gehälter g ON g.ang_nr = t.ang_nr
-UNION 
-  SELECT
-	t.ang_nr AS 'Angestellter ID',
-    titel AS 'Titel',
-    t.from_date AS 'Titel_Von',
-    t.to_date AS 'Titel_Bis',
-    gehalt AS 'Gehalt',
-    g.from_date AS 'Gehalt_Von',
-    g.to_date AS 'Gehalt_Bis'
-FROM titel t
-RIGHT JOIN gehälter g ON g.ang_nr = t.ang_nr;
-
-SELECT * FROM titel_gehaelter;
-
-CREATE OR REPLACE VIEW angestellter_gehaelter_no_titel AS
-  SELECT
-	a.ang_nr AS 'Angestellten ID',
-    vorname AS 'Vorname',
-    nachname AS 'Nachname',
-    birth_date AS 'Geburtsdatum',
-    geschlecht AS 'Gesclächt',
-    hire_date AS 'Einstellungsdatum',
-    gehalt AS 'Gehalt',
-    from_date AS 'Von',
-    to_date AS 'Bis'
-    FROM angestellte a
- LEFT JOIN gehälter g ON g.ang_nr = a.ang_nr;
-
-SELECT * FROM angestellter_gehaelter_no_titel;
 
 CREATE OR REPLACE VIEW gesamt_information_view AS
   SELECT
-    a.ang_nr AS 'Angestellten ID',
+    a.ang_nr AS 'AngestelltenID',
     a.vorname AS 'Vorname',
     a.nachname AS 'Nachname',
     a.birth_date AS 'Geburtsdatum',
@@ -157,6 +160,52 @@ CREATE OR REPLACE VIEW gesamt_information_view AS
     g.to_date AS 'Gehalt_Bis'
 FROM angestellte a
 LEFT JOIN titel t ON t.ang_nr = a.ang_nr
-LEFT JOIN gehälter g ON g.ang_nr = a.ang_nr;
+LEFT JOIN gehälter g ON g.ang_nr = a.ang_nr
+
+UNION
+
+SELECT
+    a.ang_nr AS 'AngestelltenID',
+    a.vorname AS 'Vorname',
+    a.nachname AS 'Nachname',
+    a.birth_date AS 'Geburtsdatum',
+    a.geschlecht AS 'Geschlecht',
+    a.hire_date AS 'Einstellungsdatum',
+    t.titel AS 'Titel',
+    t.from_date AS 'Titel_Von',
+    t.to_date AS 'Titel_Bis',
+    g.gehalt AS 'Gehalt',
+    g.from_date AS 'Gehalt_Von',
+    g.to_date AS 'Gehalt_Bis'
+FROM titel t
+LEFT JOIN angestellte a ON t.ang_nr = a.ang_nr
+LEFT JOIN gehälter g ON g.ang_nr = t.ang_nr
+
+UNION
+
+SELECT
+    a.ang_nr AS 'AngestelltenID',
+    a.vorname AS 'Vorname',
+    a.nachname AS 'Nachname',
+    a.birth_date AS 'Geburtsdatum',
+    a.geschlecht AS 'Geschlecht',
+    a.hire_date AS 'Einstellungsdatum',
+    t.titel AS 'Titel',
+    t.from_date AS 'Titel_Von',
+    t.to_date AS 'Titel_Bis',
+    g.gehalt AS 'Gehalt',
+    g.from_date AS 'Gehalt_Von',
+    g.to_date AS 'Gehalt_Bis'
+FROM gehälter g
+LEFT JOIN angestellte a ON g.ang_nr = a.ang_nr
+LEFT JOIN titel t ON t.ang_nr = g.ang_nr;
 
 SELECT * FROM gesamt_information_view;
+
+INSERT INTO gehälter (ang_nr, gehalt, from_date, to_date) VALUES
+(1, 70000, '2019-01-01', '2020-12-31');
+
+
+
+    
+
