@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 //import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Properties;
 
 public class MySQL {
 //    private static final String host = "SimonPC"; //DESKTOP-4PGGMQ6
@@ -122,7 +123,7 @@ public class MySQL {
                 stmt.close();
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
     return null;
@@ -280,7 +281,7 @@ public class MySQL {
             prep.execute();
             prep.close();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -296,7 +297,7 @@ public class MySQL {
             prep.execute();
             prep.close();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -311,7 +312,7 @@ public class MySQL {
             prep.execute();
             prep.close();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -345,17 +346,33 @@ public class MySQL {
      * @param Adr Hostadr.
      */
     public void connect(String Username, String Password, String Adr) {
+
+//        String url = "jdbc:mysql://" + Adr + ":" + port + "/" + database;
+        Properties properties = new Properties();
+        properties.put("user", Username);
+        properties.put("password",Password);
+        properties.put("useSSL", "true");                // SSL/TLS-Verschlüsselung aktivieren
+        properties.put("requireSSL", "true");            // SSL/TLS-Verbindung erzwingen
+        properties.put("verifyServerCertificate", "true");
+        String url = "jdbc:mysql://" + Adr + ":" + port + "/" + database +
+                "?useSSL=true&requireSSL=true&verifyServerCertificate=true";
+
+        // TrustStore-Eigenschaften setzen, falls erforderlich
+        System.setProperty("javax.net.ssl.trustStore", "C:\\Users\\Simon\\Desktop\\Studium\\3.Semester\\Datenbanken_Datensicherhheittruststore.jks");
+        System.setProperty("javax.net.ssl.trustStorePassword", "123456");
         if(!isConnected()) {
             try {
 
                 Class.forName("com.mysql.cj.jdbc.Driver");
 
                 con = DriverManager.getConnection("jdbc:mysql://" + Adr + ":"+port+"/"+database, Username, Password);
+//                con = DriverManager.getConnection(url, properties);
+//                con = DriverManager.getConnection(url,Username,Password);
                 System.out.println("[MySQL] Verbunden");
             } catch (SQLException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
             }
         }
     }

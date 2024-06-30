@@ -214,14 +214,14 @@ public class MainPanel {
     public Object getTable(){
         Object Table=null;
 
-        if (JCBTable.getSelectionModel().getSelectedItem().equalsIgnoreCase("Angestellte")){
+        if (JCBTable.getSelectionModel().getSelectedItem().equals("Angestellte")){
             System.out.println("equal Angestellte Table");
             Table ="Angestellte";
-        } else if (JCBTable.getSelectionModel().getSelectedItem().equalsIgnoreCase("gehalt")) {
+        } else if (JCBTable.getSelectionModel().getSelectedItem().equals("Gehalt")) {
             Table="Gehalt";
-        } else if (JCBTable.getSelectionModel().getSelectedItem().equalsIgnoreCase("titel")) {
+        } else if (JCBTable.getSelectionModel().getSelectedItem().equals("Titel")) {
             Table="titel";
-        }else if (JCBTable.getSelectionModel().getSelectedItem().equalsIgnoreCase("gesamt")) {
+        }else if (JCBTable.getSelectionModel().getSelectedItem().equals("Gesamt")) {
             Table = "gesamt";
         }else {
 
