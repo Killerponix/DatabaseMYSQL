@@ -2,11 +2,6 @@ DROP DATABASE IF EXISTS belegschaft;
 CREATE DATABASE IF NOT EXISTS belegschaft; 
 USE belegschaft;
 
-#DROP TABLE IF EXISTS titel,
- #                    gehälter, 
-  #                   angestellte;
-
-
 CREATE TABLE angestellte (
     ang_nr INT NOT NULL auto_increment,
     vorname VARCHAR(16) NOT NULL,
@@ -15,7 +10,9 @@ CREATE TABLE angestellte (
     geschlecht ENUM ('M','F', 'D'),    
     hire_date DATE,
     PRIMARY KEY (ang_nr)
-);
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC ENCRYPTION='Y';
+
+select * from angestellte;
 
 
 CREATE TABLE titel (
@@ -25,7 +22,7 @@ CREATE TABLE titel (
     to_date DATE NOT NULL,
     FOREIGN KEY (ang_nr) REFERENCES angestellte (ang_nr) ,
     PRIMARY KEY (ang_nr, from_date, to_date)
-); 
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC ENCRYPTION='Y'; 
 
 DELIMITER //
 CREATE TRIGGER check_overlap_before_insert_titel BEFORE INSERT ON titel
@@ -41,7 +38,7 @@ BEGIN
 
     IF overlap_found > 0 THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Überlappender Zeitraum gefunden, Einfügung abgelehnt.';
+        SET MESSAGE_TEXT = 'Überlappender Zeitraum gefunden! Einfügung abgelehnt.';
     END IF;
 END;
 //
@@ -54,7 +51,7 @@ CREATE TABLE gehälter (
     to_date DATE NOT NULL,
     FOREIGN KEY (ang_nr) REFERENCES angestellte (ang_nr) ,
     PRIMARY KEY (ang_nr, from_date, to_date)
-); 
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC ENCRYPTION='Y'; 
 
 DELIMITER //
 CREATE TRIGGER check_overlap_before_insert_gehälter BEFORE INSERT ON gehälter
@@ -70,7 +67,7 @@ BEGIN
 
     IF overlap_found > 0 THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Überlappender Zeitraum gefunden, Einfügung abgelehnt.';
+        SET MESSAGE_TEXT = 'Überlappender Zeitraum gefunden! Einfügung abgelehnt.';
     END IF;
 END;
 //
@@ -201,11 +198,4 @@ LEFT JOIN angestellte a ON g.ang_nr = a.ang_nr
 LEFT JOIN titel t ON t.ang_nr = g.ang_nr;
 
 SELECT * FROM gesamt_information_view;
-
-INSERT INTO gehälter (ang_nr, gehalt, from_date, to_date) VALUES
-(1, 70000, '2019-01-01', '2020-12-31');
-
-
-
-    
 
