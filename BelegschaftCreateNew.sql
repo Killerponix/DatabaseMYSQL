@@ -38,7 +38,7 @@ BEGIN
 
     IF overlap_found > 0 THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Überlappender Zeitraum gefunden! Einfügung abgelehnt.';
+        SET MESSAGE_TEXT = 'Überlappender Zeitraum gefunden! Bitte geben Sie einen Zeitraum an, der noch nicht verwendet wurde.';
     END IF;
 END;
 //
@@ -67,7 +67,7 @@ BEGIN
 
     IF overlap_found > 0 THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Überlappender Zeitraum gefunden! Einfügung abgelehnt.';
+        SET MESSAGE_TEXT = 'Überlappender Zeitraum gefunden! Bitte geben Sie einen Zeitraum an, der noch nicht verwendet wurde.';
     END IF;
 END;
 //
