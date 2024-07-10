@@ -116,7 +116,7 @@ INSERT INTO titel (ang_nr, titel, from_date, to_date) VALUES
     
     SELECT * FROM titel;
     
-    insert into gehälter (ang_nr, gehalt, from_date, to_date) values
+    INSERT INTO gehälter (ang_nr, gehalt, from_date, to_date) VALUES
 	(1, 60000, '2021-01-05', '2021-12-31'),
     (1, 65000, '2022-01-05', '9999-01-01'),
     (2, 55000, '2021-01-05', '9999-01-01'),
